@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:bh="clr-namespace:POCFederacionCafeteros.Behaviors"
+             xmlns:cv="clr-namespace:POCFederacionCafeteros.Converters"
+             xmlns:vm="clr-namespace:POCFederacionCafeteros.ViewModels"
+             xmlns:prism="http://prismlibrary.com"
+             xmlns:prismBh="clr-namespace:Prism.Behaviors;assembly=Prism.Maui"
+             xmlns:esriUI="clr-namespace:Esri.ArcGISRuntime.Maui;assembly=Esri.ArcGISRuntime.Maui"
+             prism:ViewModelLocator.AutowireViewModel="Forced"
+             x:Class="POCFederacionCafeteros.Views.MainPage"
+             Title="MainPage">
+  <ContentPage.Padding>
+    <OnPlatform x:TypeArguments="Thickness">
+      <On Platform="iOS"
+          Value="0,0,0,20" />
+    </OnPlatform>
+  </ContentPage.Padding>
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <cv:GeographicCoordinateConverter x:Key="GeographicCoordinateConverter" />
+    </ResourceDictionary>
+  </ContentPage.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+    </Grid.RowDefinitions>
+    <esriUI:MapView Map="{Binding Map}"
+                    GraphicsOverlays="{Binding GraphicsOverlayCollection}">
+      <esriUI:MapView.Behaviors>
+        <bh:ViewportChangedBehavior Command="{Binding UpdateViewpointCommand}" />
+        <bh:SetViewpointBehavior Viewpoint="{Binding NewViewpoint}" />
+      </esriUI:MapView.Behaviors>
+    </esriUI:MapView>
+    <Grid Margin="10"
+          HorizontalOptions="Start"
+          VerticalOptions="Start"
+          BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+      <StackLayout Orientation="Vertical"
+                   Margin="10"
+                   WidthRequest="200"
+                   HeightRequest="100">
+        <Label Text="{Binding ActualViewpoint.TargetGeometry.XMin, 
+                              Converter={StaticResource GeographicCoordinateConverter},
+                              ConverterParameter='X',
+                              StringFormat='XMin = {0}'}" />
+        <Label Text="{Binding ActualViewpoint.TargetGeometry.YMin,
+                              Converter={StaticResource GeographicCoordinateConverter},
+                              ConverterParameter='Y',
+                              StringFormat='YMin = {0}'}" />
+        <Label Text="{Binding ActualViewpoint.TargetGeometry.XMax,
+                              Converter={StaticResource GeographicCoordinateConverter},
+                              ConverterParameter='X',
+                              StringFormat='XMax = {0}'}" />
+        <Label Text="{Binding ActualViewpoint.TargetGeometry.YMax,
+                              Converter={StaticResource GeographicCoordinateConverter},
+                              ConverterParameter='Y',
+                              StringFormat='YMax = {0}'}" />
+      </StackLayout>
+    </Grid>
+    <StackLayout Grid.Row="1"
+                 HorizontalOptions="CenterAndExpand"
+                 Orientation="Horizontal">
+      <Button x:Name="BotonCargarGeoJson"
+              Text="Cargar GeoJson"
+              Margin="5"
+              HeightRequest="40"
+              Command="{Binding LoadJsonCommand}" />
+    </StackLayout>
+  </Grid>
+</ContentPage>
